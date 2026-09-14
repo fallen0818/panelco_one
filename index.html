@@ -127,7 +127,7 @@
     font-family: Calibri, Arial, sans-serif; font-size: 12px; color: var(--muted);
     margin: 8px 0 -4px; font-style: italic;
   }
-  input:invalid:not(:placeholder-shown), select:invalid:not([value=""]) { border-color: transparent; }
+  /* Show red error state only after a submit attempt — do not hide the default border */
   form.submitted input:invalid, form.submitted select:invalid, form.submitted textarea:invalid {
     border-color: #dc2626; background: #fef2f2;
   }
