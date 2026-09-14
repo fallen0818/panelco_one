@@ -1,0 +1,1002 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PANELCO I — Customer Satisfaction & Feedback Survey</title>
+<style>
+  :root {
+    --navy: #1f3864;
+    --navy-2: #dbe9f7;
+    --ink: #0f172a;
+    --muted: #64748b;
+    --line: #cbd5e1;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --ok: #16a34a;
+    --err: #dc2626;
+    --focus: #2563eb;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.45;
+    font-size: 15px;
+  }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 24px 20px 80px; }
+  header.doc {
+    background: #fff;
+    border: 2px solid #000;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    align-items: stretch;
+  }
+  header.doc .title {
+    grid-row: 1 / span 2;
+    padding: 14px 16px;
+    border-right: 2px solid #000;
+    display: flex; flex-direction: column; justify-content: center; gap: 6px;
+    text-align: center;
+  }
+  header.doc .title .org { font-weight: 700; font-size: 15px; }
+  header.doc .title .form-title { font-weight: 700; font-size: 14px; }
+  header.doc .meta {
+    padding: 8px 12px; font-size: 12px; border-bottom: 2px solid #000;
+    min-width: 200px;
+  }
+  header.doc .meta:last-child { border-bottom: none; }
+  .note {
+    background: var(--navy-2);
+    color: var(--navy);
+    font-size: 12px;
+    padding: 10px 14px;
+    border-left: 4px solid var(--navy);
+    margin-top: 14px;
+    border-radius: 4px;
+  }
+  .form-picker {
+    margin-top: 20px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px;
+  }
+  .form-picker button {
+    flex: 1 1 200px;
+    padding: 10px 14px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font: inherit;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    transition: background 120ms, color 120ms, border-color 120ms;
+  }
+  .form-picker button:hover { border-color: var(--navy); color: var(--navy); }
+  .form-picker button.active {
+    background: var(--navy); color: #fff; border-color: var(--navy);
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 24px;
+    margin-top: 16px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  }
+  h2.section {
+    color: var(--navy);
+    font-size: 15px;
+    margin: 20px 0 10px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--navy-2);
+    letter-spacing: 0.02em;
+    font-family: Calibri, Arial, sans-serif;
+  }
+  h2.section:first-of-type { margin-top: 0; }
+  h1.form-heading {
+    color: var(--navy);
+    font-size: 19px;
+    margin: 0 0 4px;
+    font-family: Calibri, Arial, sans-serif;
+  }
+  .subtitle { color: var(--muted); font-size: 13px; margin-bottom: 4px; font-style: italic; font-family: Calibri, Arial, sans-serif; }
+  .iso-align { font-size: 12px; color: var(--navy); background: var(--navy-2); padding: 8px 12px; border-radius: 4px; margin: 8px 0 16px; font-family: Calibri, Arial, sans-serif; }
+  .row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 20px;
+    margin-bottom: 10px;
+  }
+  .row.full > .field { grid-column: 1 / -1; }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field label {
+    font-size: 13px; font-weight: 600; color: var(--ink);
+    font-family: Calibri, Arial, sans-serif;
+  }
+  .req { color: #dc2626; font-weight: 700; margin-left: 2px; }
+  .req-legend {
+    font-family: Calibri, Arial, sans-serif; font-size: 12px; color: var(--muted);
+    margin: 8px 0 -4px; font-style: italic;
+  }
+  input:invalid:not(:placeholder-shown), select:invalid:not([value=""]) { border-color: transparent; }
+  form.submitted input:invalid, form.submitted select:invalid, form.submitted textarea:invalid {
+    border-color: #dc2626; background: #fef2f2;
+  }
+  .field small { color: var(--muted); font-size: 11px; font-family: Calibri, Arial, sans-serif; }
+  input[type="text"], input[type="number"], input[type="date"], select, textarea {
+    font: inherit; font-family: Calibri, Arial, sans-serif; font-size: 14px;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+    color: var(--ink);
+    width: 100%;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: 2px solid var(--focus); outline-offset: 1px; border-color: var(--focus);
+  }
+  textarea { min-height: 84px; resize: vertical; }
+  .choices { display: flex; flex-wrap: wrap; gap: 10px 18px; padding-top: 4px; font-family: Calibri, Arial, sans-serif; }
+  .choices label { display: inline-flex; align-items: center; gap: 6px; font-weight: 500; font-size: 13px; }
+  .choices input[type="radio"], .choices input[type="checkbox"] { transform: scale(1.05); }
+  .other-inline { display: inline-flex; align-items: center; gap: 6px; }
+  .other-inline input[type="text"] { width: 180px; padding: 4px 8px; font-size: 13px; }
+  table.rate {
+    width: 100%; border-collapse: collapse; margin-top: 6px;
+    font-family: Calibri, Arial, sans-serif; font-size: 13px;
+  }
+  table.rate thead th {
+    background: var(--navy); color: #fff; font-weight: 700; text-align: center;
+    padding: 8px 6px; border: 1px solid var(--navy); font-size: 12px;
+  }
+  table.rate thead th.criteria { text-align: left; padding-left: 12px; }
+  table.rate tbody td {
+    border: 1px solid var(--line); padding: 8px; text-align: center; vertical-align: middle;
+  }
+  table.rate tbody td.criteria { text-align: left; font-weight: 500; }
+  table.rate tbody tr:nth-child(even) td { background: #fafbfc; }
+  table.rate input[type="radio"] { transform: scale(1.25); cursor: pointer; }
+  table.rate tr.overall td.criteria { font-weight: 700; color: var(--navy); }
+  /* Inline rating labels — hidden on desktop (table header shows them); shown on mobile */
+  table.rate .rnum, table.rate .rlabel { display: none; }
+  table.rate label.ropt { cursor: pointer; }
+  .integrity {
+    border: 1px solid #f59e0b; background: #fffbeb; padding: 12px 14px; border-radius: 6px;
+    margin-top: 6px;
+  }
+  .integrity p { margin: 0 0 8px; font-size: 13px; font-family: Calibri, Arial, sans-serif; }
+  .confidential-note {
+    font-style: italic; font-size: 11px; color: #555; margin-top: 8px; font-family: Calibri, Arial, sans-serif;
+  }
+  .actions {
+    display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px; flex-wrap: wrap;
+  }
+  button.btn {
+    padding: 11px 22px; font: inherit; font-weight: 600; font-family: Calibri, Arial, sans-serif;
+    border-radius: 6px; cursor: pointer; border: 1px solid transparent;
+    font-size: 14px;
+  }
+  button.btn.primary { background: var(--navy); color: #fff; }
+  button.btn.primary:hover { background: #16294d; }
+  button.btn.ghost { background: #fff; color: var(--navy); border-color: var(--navy); }
+  button.btn.ghost:hover { background: var(--navy-2); }
+  button.btn:disabled { opacity: 0.6; cursor: wait; }
+  .status {
+    margin-top: 14px; padding: 10px 14px; border-radius: 6px; font-size: 13px; display: none;
+    font-family: Calibri, Arial, sans-serif;
+  }
+  .status.show { display: block; }
+  .status.ok { background: #ecfdf5; color: var(--ok); border: 1px solid #a7f3d0; }
+  .status.err { background: #fef2f2; color: var(--err); border: 1px solid #fecaca; }
+  .hidden { display: none !important; }
+  footer.help {
+    margin-top: 30px; padding: 16px; background: #fff; border: 1px dashed var(--line);
+    border-radius: 8px; font-size: 12px; color: var(--muted); font-family: Calibri, Arial, sans-serif;
+  }
+  footer.help code {
+    background: #f1f5f9; padding: 2px 6px; border-radius: 3px; font-size: 12px;
+    color: var(--ink);
+  }
+  /* ---------- Mobile-first tuning (phones ≤ 720px) ---------- */
+  @media (max-width: 720px) {
+    body { font-size: 16px; -webkit-text-size-adjust: 100%; }
+    .wrap { padding: 12px 12px 40px; }
+
+    /* Header stacks */
+    header.doc { grid-template-columns: 1fr; }
+    header.doc .title { border-right: none; border-bottom: 2px solid #000; padding: 12px; }
+    header.doc .title .org { font-size: 14px; line-height: 1.3; }
+    header.doc .title .form-title { font-size: 13px; line-height: 1.3; }
+    header.doc .meta { min-width: 0; padding: 6px 10px; font-size: 11px; }
+
+    /* Tabs — one per row so they're big & tappable */
+    .form-picker { flex-direction: column; padding: 6px; gap: 6px; position: sticky; top: 0; z-index: 10; }
+    .form-picker button { flex: none; padding: 14px 12px; font-size: 15px; }
+
+    /* Cards */
+    .card { padding: 16px 14px; margin-top: 12px; }
+    h1.form-heading { font-size: 17px; }
+    .subtitle, .iso-align { font-size: 12px; }
+    h2.section { font-size: 15px; margin: 22px 0 10px; }
+
+    /* Form rows always single column */
+    .row { grid-template-columns: 1fr; gap: 12px; }
+    .field label { font-size: 14px; }
+
+    /* Big touch inputs — 16px font avoids iOS auto-zoom on focus */
+    input[type="text"], input[type="number"], input[type="date"], select, textarea {
+      font-size: 16px; padding: 12px 12px; border-radius: 8px;
+    }
+    select { min-height: 46px; }
+    textarea { min-height: 100px; }
+
+    /* Radios / checkboxes — big tap targets via padded labels */
+    .choices { gap: 8px; }
+    .choices label {
+      font-size: 15px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      width: 100%;
+      min-height: 44px;
+    }
+    .choices input[type="radio"], .choices input[type="checkbox"] { transform: scale(1.3); margin-right: 4px; }
+    .other-inline { width: 100%; flex-wrap: wrap; }
+    .other-inline input[type="text"] { width: 100%; margin-top: 6px; font-size: 15px; padding: 10px; }
+
+    /* Rating table → card list per row (much easier on phones) */
+    table.rate, table.rate tbody, table.rate tr, table.rate td { display: block; width: 100%; }
+    table.rate thead { display: none; } /* hide header row — we label each rating inline */
+    table.rate tbody tr {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 10px;
+      background: #fff;
+    }
+    table.rate tbody tr:nth-child(even) td { background: transparent; }
+    table.rate tbody td { border: none; text-align: left; padding: 0; }
+    table.rate td.criteria {
+      font-weight: 600;
+      color: var(--ink);
+      font-size: 14px;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed var(--line);
+      line-height: 1.35;
+    }
+    table.rate tr.overall {
+      background: var(--navy-2);
+      border-color: var(--navy);
+    }
+    table.rate tr.overall td.criteria { color: var(--navy); font-weight: 700; }
+    /* Each rating cell becomes a labeled option button */
+    table.rate td:not(.criteria) {
+      display: inline-block; width: calc(20% - 6px); margin-right: 6px; margin-top: 4px;
+      text-align: center;
+    }
+    table.rate td:not(.criteria) label.ropt {
+      padding: 10px 4px 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      cursor: pointer;
+      color: var(--ink);
+      line-height: 1.15;
+      min-height: 68px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      transition: background 100ms, color 100ms, border-color 100ms;
+    }
+    table.rate td:not(.criteria) label.ropt:has(input:checked) {
+      background: var(--navy);
+      color: #fff;
+      border-color: var(--navy);
+      box-shadow: 0 2px 6px rgba(31,56,100,0.25);
+    }
+    table.rate td:not(.criteria) input[type="radio"] {
+      /* Hide the tiny native radio on mobile — the whole button is the target */
+      position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px;
+    }
+    table.rate .rnum {
+      display: block !important;
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1;
+    }
+    table.rate .rlabel {
+      display: block !important;
+      font-size: 10.5px;
+      opacity: 0.85;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    /* Actions — big buttons, stacked */
+    .actions { flex-direction: column-reverse; gap: 10px; }
+    button.btn { width: 100%; padding: 14px 18px; font-size: 16px; min-height: 48px; }
+
+    /* Notes / integrity — comfortable padding */
+    .integrity { padding: 14px; }
+    .integrity p { font-size: 14px; line-height: 1.5; }
+    .confidential-note { font-size: 12px; line-height: 1.5; }
+    .note { font-size: 13px; padding: 12px; line-height: 1.5; }
+    .req-legend { font-size: 13px; }
+
+    /* Status message readable */
+    .status { font-size: 14px; padding: 12px; line-height: 1.4; }
+  }
+
+  /* ---------- Very small phones ---------- */
+  @media (max-width: 380px) {
+    .card { padding: 12px 10px; }
+    table.rate td:not(.criteria) label { font-size: 12px; padding: 10px 2px; min-height: 52px; }
+    table.rate td:not(.criteria) .rlabel { font-size: 10px; }
+  }
+  @media print {
+    .form-picker, .actions, footer.help, .status { display: none !important; }
+    body { background: #fff; }
+    .card { border: none; box-shadow: none; padding: 0; }
+    .hidden { display: block !important; } /* print all forms */
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="doc">
+    <div class="title">
+      <div class="org">PANGASINAN I ELECTRIC COOPERATIVE (PANELCO I)</div>
+      <div class="form-title">CUSTOMER SATISFACTION &amp; FEEDBACK SURVEY QUESTIONNAIRES</div>
+    </div>
+    <div class="meta"><strong>Form No.:</strong> F-FSD-____<br><strong>Revision No.:</strong> 0</div>
+    <div class="meta"><strong>Effective:</strong> October 1, 2026<br><strong>Page:</strong> 1 of 1</div>
+  </header>
+
+  <div class="note">
+    Completed forms are treated as Quality Records (ISO 9001:2015 Clause 7.5) and are collected, tabulated,
+    analyzed, and reported to Management Review per PANELCO I's Customer Satisfaction Monitoring Procedure.
+    Responses to the Honesty &amp; Integrity item are confidential and used solely for integrity monitoring.
+  </div>
+
+  <div class="form-picker" role="tablist" aria-label="Select survey form">
+    <button type="button" data-target="form1" class="active" role="tab" aria-selected="true">Form 1 — External Customer</button>
+    <button type="button" data-target="form2" role="tab" aria-selected="false">Form 2 — Service Provider</button>
+    <button type="button" data-target="form3" role="tab" aria-selected="false">Form 3 — Internal Customer</button>
+  </div>
+
+  <!-- ================= FORM 1 ================= -->
+  <form id="form1" class="card" data-formname="External Customer / Stakeholder Satisfaction Survey">
+    <h1 class="form-heading">Form 1 — External Customer / Stakeholder Satisfaction Survey</h1>
+    <div class="subtitle">To be accomplished by consumers and stakeholders transacting with the Finance Services Department</div>
+    <div class="iso-align"><strong>ISO 9001:2015 alignment:</strong> Clause 4.2 (Needs &amp; Expectations of Interested Parties) and Clause 9.1.2 (Customer Satisfaction).</div>
+    <div class="req-legend">Fields marked <span class="req">*</span> are required.</div>
+
+
+    <h2 class="section">A. Respondent Profile</h2>
+    <div class="row">
+      <div class="field">
+        <label for="f1_age">Age <span class="req">*</span></label>
+        <input type="number" id="f1_age" name="age" min="1" max="120" inputmode="numeric" placeholder="e.g. 34" required>
+      </div>
+      <div class="field">
+        <label for="f1_location">Municipality / City <span class="req">*</span></label>
+        <select id="f1_location" name="location" required>
+          <option value="">-- Select municipality/city --</option>
+          <option>Alaminos City</option>
+          <option>Bani</option>
+          <option>Bolinao</option>
+          <option>Anda</option>
+          <option>Agno</option>
+          <option>Mabini</option>
+          <option>Burgos</option>
+          <option>Dasol</option>
+          <option>Infanta</option>
+        </select>
+      </div>
+    </div>
+    <div class="row full">
+      <div class="field">
+        <label>Client Type <span class="req">*</span></label>
+        <div class="choices">
+          <label><input type="radio" name="client_type" value="Individual" required> Individual</label>
+          <label><input type="radio" name="client_type" value="Corporate/Business"> Corporate/Business</label>
+          <label><input type="radio" name="client_type" value="Government"> Government</label>
+          <label class="other-inline">
+            <input type="radio" name="client_type" value="Other">
+            <span>Other:</span>
+            <input type="text" name="client_type_other" placeholder="specify">
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="section">B. Transaction Details</h2>
+    <div class="row">
+      <div class="field">
+        <label for="f1_service">Service Requested <span class="req">*</span></label>
+        <select id="f1_service" name="service_requested" required>
+          <option value="">-- Select service --</option>
+          <option>New Service Connection</option>
+          <option>Bill Payment</option>
+          <option>Bill Inquiry / Account Statement</option>
+          <option>Reconnection</option>
+          <option>Disconnection Request</option>
+          <option>Change of Account Name / Transfer</option>
+          <option>Meter-related Concern</option>
+          <option>Complaint / Concern</option>
+          <option>Certification / Document Request</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f1_employee">Name of Employee who Assisted You <span class="req">*</span></label>
+        <input type="text" id="f1_employee" name="employee_name" required>
+      </div>
+      <div class="field">
+        <label for="f1_date">Date of Transaction <span class="req">*</span></label>
+        <input type="date" id="f1_date" name="date_of_transaction" required>
+      </div>
+    </div>
+
+    <h2 class="section">C. Service Evaluation</h2>
+    <small style="display:block;margin-bottom:6px;color:var(--muted);font-family:Calibri,Arial,sans-serif;">
+      Please rate your experience by selecting the box that best corresponds to your assessment.
+    </small>
+    <table class="rate" aria-label="Service Evaluation">
+      <thead>
+        <tr>
+          <th class="criteria">Service Quality Criteria</th>
+          <th>5 Excellent</th><th>4 Very Satisfactory</th><th>3 Satisfactory</th><th>2 Fair</th><th>1 Poor</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="criteria">Timeliness (service delivered within reasonable/committed time) <span class="req">*</span></td>
+          <td><label class="ropt"><input type="radio" name="rate_timeliness" value="5" required><span class="rnum">5</span><span class="rlabel">Excellent</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_timeliness" value="4"><span class="rnum">4</span><span class="rlabel">Very Sat.</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_timeliness" value="3"><span class="rnum">3</span><span class="rlabel">Satisfactory</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_timeliness" value="2"><span class="rnum">2</span><span class="rlabel">Fair</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_timeliness" value="1"><span class="rnum">1</span><span class="rlabel">Poor</span></label></td>
+        </tr>
+        <tr><td class="criteria">Quality (accuracy, completeness, and correctness of service/output) <span class="req">*</span></td>
+          <td><label class="ropt"><input type="radio" name="rate_quality" value="5" required><span class="rnum">5</span><span class="rlabel">Excellent</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_quality" value="4"><span class="rnum">4</span><span class="rlabel">Very Sat.</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_quality" value="3"><span class="rnum">3</span><span class="rlabel">Satisfactory</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_quality" value="2"><span class="rnum">2</span><span class="rlabel">Fair</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_quality" value="1"><span class="rnum">1</span><span class="rlabel">Poor</span></label></td>
+        </tr>
+        <tr><td class="criteria">Attitude (courtesy, professionalism, and helpfulness of employee) <span class="req">*</span></td>
+          <td><label class="ropt"><input type="radio" name="rate_attitude" value="5" required><span class="rnum">5</span><span class="rlabel">Excellent</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_attitude" value="4"><span class="rnum">4</span><span class="rlabel">Very Sat.</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_attitude" value="3"><span class="rnum">3</span><span class="rlabel">Satisfactory</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_attitude" value="2"><span class="rnum">2</span><span class="rlabel">Fair</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_attitude" value="1"><span class="rnum">1</span><span class="rlabel">Poor</span></label></td>
+        </tr>
+        <tr class="overall"><td class="criteria">Overall Rating <span class="req">*</span></td>
+          <td><label class="ropt"><input type="radio" name="rate_overall" value="5" required><span class="rnum">5</span><span class="rlabel">Excellent</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_overall" value="4"><span class="rnum">4</span><span class="rlabel">Very Sat.</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_overall" value="3"><span class="rnum">3</span><span class="rlabel">Satisfactory</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_overall" value="2"><span class="rnum">2</span><span class="rlabel">Fair</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_overall" value="1"><span class="rnum">1</span><span class="rlabel">Poor</span></label></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 class="section">D. Honesty and Integrity</h2>
+    <div class="integrity">
+      <p>Before or during the processing of your transaction, were you asked for — or did you offer or give — any gift, gratuity, favor, entertainment, loan, or anything of monetary value or other form of consideration (aside from official/authorized fees) to any employee or representative of the Finance Services Department to expedite, facilitate, or influence the outcome of your transaction? <span class="req">*</span></p>
+      <div class="choices">
+        <label><input type="radio" name="integrity" value="No" required> No</label>
+        <label><input type="radio" name="integrity" value="Yes"> Yes</label>
+      </div>
+      <div class="field" style="margin-top:10px;">
+        <label for="f1_integrity_details">If yes, please provide details (what was asked/given, by/to whom, and the circumstances):</label>
+        <textarea id="f1_integrity_details" name="integrity_details"></textarea>
+      </div>
+      <div class="confidential-note">
+        Responses to this item are handled with strict confidentiality and used solely for honesty/integrity
+        monitoring under PANELCO I's Code of Ethics and Discipline; they do not affect the service you receive.
+      </div>
+    </div>
+
+    <h2 class="section">E. Comments / Suggestions for Improvement</h2>
+    <div class="row full">
+      <div class="field">
+        <textarea name="comments" placeholder="Your comments or suggestions…"></textarea>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="f1_respondent">Respondent's Name / Signature (optional)</label>
+        <input type="text" id="f1_respondent" name="respondent_name">
+      </div>
+      <div class="field">
+        <label for="f1_signdate">Date</label>
+        <input type="date" id="f1_signdate" name="date_signed">
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="button" class="btn ghost" onclick="window.print()">Print</button>
+      <button type="reset" class="btn ghost">Reset</button>
+      <button type="submit" class="btn primary">Submit to Google Sheet</button>
+    </div>
+    <div class="status" role="status" aria-live="polite"></div>
+  </form>
+
+  <!-- ================= FORM 2 ================= -->
+  <form id="form2" class="card hidden" data-formname="External Service Provider Feedback Survey">
+    <h1 class="form-heading">Form 2 — External Service Provider Feedback Survey</h1>
+    <div class="subtitle">To be accomplished by consumers/employees regarding bills payment and other external service providers</div>
+    <div class="iso-align"><strong>ISO 9001:2015 alignment:</strong> Clause 8.4 (Control of Externally Provided Processes, Products and Services) and Clause 9.1.2 (Customer Satisfaction).</div>
+    <div class="req-legend">Fields marked <span class="req">*</span> are required.</div>
+
+
+    <h2 class="section">A. Provider &amp; Transaction Details</h2>
+    <div class="row">
+      <div class="field">
+        <label for="f2_provider">Name of Service Provider <span class="req">*</span></label>
+        <select id="f2_provider" name="service_provider" required>
+          <option value="">-- Select provider --</option>
+          <option>PANELCO I Cashier (Main Office)</option>
+          <option>PANELCO I Sub-office / Branch</option>
+          <option>GCash</option>
+          <option>Maya (PayMaya)</option>
+          <option>Bayad Center</option>
+          <option>ECPay</option>
+          <option>7-Eleven CLIQQ</option>
+          <option>SM Bills Payment</option>
+          <option>Palawan Express / PalawanPay</option>
+          <option>LBC</option>
+          <option>M. Lhuillier</option>
+          <option>Cebuana Lhuillier</option>
+          <option>Online Banking</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f2_biltype">Type of Bill / Transaction Paid <span class="req">*</span></label>
+        <select id="f2_biltype" name="bill_type" required>
+          <option value="">-- Select transaction type --</option>
+          <option>Monthly Electricity Bill</option>
+          <option>Bill Deposit</option>
+          <option>Membership Fee</option>
+          <option>Reconnection Fee</option>
+          <option>Meter Deposit</option>
+          <option>Service Application Fee</option>
+          <option>Penalty / Surcharge</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f2_txndate">Date of Transaction <span class="req">*</span></label>
+        <input type="date" id="f2_txndate" name="date_of_transaction" required>
+      </div>
+      <div class="field">
+        <label for="f2_refno">Reference / Transaction No. <span class="req">*</span></label>
+        <input type="text" id="f2_refno" name="reference_no" required>
+      </div>
+    </div>
+    <div class="row full">
+      <div class="field">
+        <label>Payment Channel Used <span class="req">*</span></label>
+        <div class="choices">
+          <label><input type="radio" name="payment_channel" value="Online Portal" required> Online Portal</label>
+          <label><input type="radio" name="payment_channel" value="Mobile App"> Mobile App</label>
+          <label><input type="radio" name="payment_channel" value="Over-the-Counter"> Over-the-Counter</label>
+          <label class="other-inline">
+            <input type="radio" name="payment_channel" value="Other">
+            <span>Other:</span>
+            <input type="text" name="payment_channel_other" placeholder="specify">
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="row full">
+      <div class="field">
+        <label>Proof of Payment Received? <span class="req">*</span></label>
+        <div class="choices">
+          <label><input type="radio" name="proof_received" value="Yes" required> Yes</label>
+          <label><input type="radio" name="proof_received" value="No"> No</label>
+        </div>
+        <small>If yes, form:</small>
+        <div class="choices">
+          <label><input type="radio" name="proof_form" value="Official Receipt"> Official Receipt</label>
+          <label><input type="radio" name="proof_form" value="E-Receipt/Confirmation"> E-Receipt / Confirmation</label>
+          <label class="other-inline">
+            <input type="radio" name="proof_form" value="Other">
+            <span>Other:</span>
+            <input type="text" name="proof_form_other" placeholder="specify">
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="section">B. Service Evaluation</h2>
+    <table class="rate">
+      <thead>
+        <tr>
+          <th class="criteria">Service Quality Criteria</th>
+          <th>5 Excellent</th><th>4 Very Satisfactory</th><th>3 Satisfactory</th><th>2 Fair</th><th>1 Poor</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="criteria">Efficiency of the payment portal/channel (speed, uptime, ease of use) <span class="req">*</span></td>
+          <td><label class="ropt"><input type="radio" name="rate_efficiency" value="5" required><span class="rnum">5</span><span class="rlabel">Excellent</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_efficiency" value="4"><span class="rnum">4</span><span class="rlabel">Very Sat.</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_efficiency" value="3"><span class="rnum">3</span><span class="rlabel">Satisfactory</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_efficiency" value="2"><span class="rnum">2</span><span class="rlabel">Fair</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_efficiency" value="1"><span class="rnum">1</span><span class="rlabel">Poor</span></label></td>
+        </tr>
+        <tr><td class="criteria">Accuracy of the transaction (correct amount posted/reflected) <span class="req">*</span></td>
+          <td><label class="ropt"><input type="radio" name="rate_accuracy" value="5" required><span class="rnum">5</span><span class="rlabel">Excellent</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_accuracy" value="4"><span class="rnum">4</span><span class="rlabel">Very Sat.</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_accuracy" value="3"><span class="rnum">3</span><span class="rlabel">Satisfactory</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_accuracy" value="2"><span class="rnum">2</span><span class="rlabel">Fair</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_accuracy" value="1"><span class="rnum">1</span><span class="rlabel">Poor</span></label></td>
+        </tr>
+        <tr><td class="criteria">Proof of payment (issued promptly, complete, and correct) <span class="req">*</span></td>
+          <td><label class="ropt"><input type="radio" name="rate_proof" value="5" required><span class="rnum">5</span><span class="rlabel">Excellent</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_proof" value="4"><span class="rnum">4</span><span class="rlabel">Very Sat.</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_proof" value="3"><span class="rnum">3</span><span class="rlabel">Satisfactory</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_proof" value="2"><span class="rnum">2</span><span class="rlabel">Fair</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_proof" value="1"><span class="rnum">1</span><span class="rlabel">Poor</span></label></td>
+        </tr>
+        <tr><td class="criteria">Accessibility (availability of channels and ease of reaching support) <span class="req">*</span></td>
+          <td><label class="ropt"><input type="radio" name="rate_accessibility" value="5" required><span class="rnum">5</span><span class="rlabel">Excellent</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_accessibility" value="4"><span class="rnum">4</span><span class="rlabel">Very Sat.</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_accessibility" value="3"><span class="rnum">3</span><span class="rlabel">Satisfactory</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_accessibility" value="2"><span class="rnum">2</span><span class="rlabel">Fair</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_accessibility" value="1"><span class="rnum">1</span><span class="rlabel">Poor</span></label></td>
+        </tr>
+        <tr class="overall"><td class="criteria">Overall Rating <span class="req">*</span></td>
+          <td><label class="ropt"><input type="radio" name="rate_overall" value="5" required><span class="rnum">5</span><span class="rlabel">Excellent</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_overall" value="4"><span class="rnum">4</span><span class="rlabel">Very Sat.</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_overall" value="3"><span class="rnum">3</span><span class="rlabel">Satisfactory</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_overall" value="2"><span class="rnum">2</span><span class="rlabel">Fair</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_overall" value="1"><span class="rnum">1</span><span class="rlabel">Poor</span></label></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 class="section">C. Issues Encountered</h2>
+    <div class="row full">
+      <div class="field">
+        <label>Did you encounter any issue with this provider? <span class="req">*</span></label>
+        <div class="choices">
+          <label><input type="radio" name="issue_encountered" value="Yes" required> Yes</label>
+          <label><input type="radio" name="issue_encountered" value="No"> No</label>
+        </div>
+      </div>
+      <div class="field">
+        <label for="f2_issue_desc">If yes, please describe:</label>
+        <textarea id="f2_issue_desc" name="issue_description"></textarea>
+      </div>
+    </div>
+
+    <h2 class="section">D. Honesty and Integrity</h2>
+    <div class="integrity">
+      <p>Before or during the processing of your transaction, were you asked for — or did you offer or give — any gift, gratuity, favor, entertainment, loan, or anything of monetary value or other form of consideration (aside from official/authorized fees) to any employee or representative of the Finance Services Department to expedite, facilitate, or influence the outcome of your transaction? <span class="req">*</span></p>
+      <div class="choices">
+        <label><input type="radio" name="integrity" value="No" required> No</label>
+        <label><input type="radio" name="integrity" value="Yes"> Yes</label>
+      </div>
+      <div class="field" style="margin-top:10px;">
+        <label for="f2_integrity_details">If yes, please provide details:</label>
+        <textarea id="f2_integrity_details" name="integrity_details"></textarea>
+      </div>
+      <div class="confidential-note">
+        Responses to this item are handled with strict confidentiality and used solely for honesty/integrity
+        monitoring under PANELCO I's Code of Ethics and Discipline; they do not affect the service you receive.
+      </div>
+    </div>
+
+    <h2 class="section">E. Comments / Recommendations</h2>
+    <div class="row full">
+      <div class="field">
+        <textarea name="comments"></textarea>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="f2_respondent">Respondent's Name / Signature (optional)</label>
+        <input type="text" id="f2_respondent" name="respondent_name">
+      </div>
+      <div class="field">
+        <label for="f2_signdate">Date</label>
+        <input type="date" id="f2_signdate" name="date_signed">
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="button" class="btn ghost" onclick="window.print()">Print</button>
+      <button type="reset" class="btn ghost">Reset</button>
+      <button type="submit" class="btn primary">Submit to Google Sheet</button>
+    </div>
+    <div class="status" role="status" aria-live="polite"></div>
+  </form>
+
+  <!-- ================= FORM 3 ================= -->
+  <form id="form3" class="card hidden" data-formname="Internal Customer Satisfaction Survey">
+    <h1 class="form-heading">Form 3 — Internal Customer Satisfaction Survey</h1>
+    <div class="subtitle">To be accomplished by employees of other departments availing of the Finance Services Department's support</div>
+    <div class="iso-align"><strong>ISO 9001:2015 alignment:</strong> Clause 9.1 / 9.1.3 (Monitoring, Measurement, Analysis and Evaluation), Clause 7.4 (Communication), and Clause 10.2 (Continual Improvement).</div>
+    <div class="req-legend">Fields marked <span class="req">*</span> are required.</div>
+
+
+    <h2 class="section">A. Requestor Information</h2>
+    <div class="row">
+      <div class="field">
+        <label for="f3_requesting">Requesting Department / Section <span class="req">*</span></label>
+        <select id="f3_requesting" name="requesting_department" required>
+          <option value="">-- Select department --</option>
+          <option>Office of the General Manager</option>
+          <option>Institutional Services Department</option>
+          <option>Finance Services Department</option>
+          <option>Engineering Department</option>
+          <option>Operations &amp; Maintenance Department</option>
+          <option>Customer Service Department</option>
+          <option>Human Resources</option>
+          <option>Information Technology</option>
+          <option>Internal Audit</option>
+          <option>Legal Office</option>
+          <option>Membership Services</option>
+          <option>Materials Management / Warehouse</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f3_rated">Department / Unit Being Rated <span class="req">*</span></label>
+        <select id="f3_rated" name="rated_department" required>
+          <option value="">-- Select department --</option>
+          <option>Finance Services Department</option>
+          <option>Accounting Section</option>
+          <option>Cashiering Section</option>
+          <option>Billing Section</option>
+          <option>Collection Section</option>
+          <option>Budget Section</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f3_contact">Name of Employee / Contact Person (optional)</label>
+        <input type="text" id="f3_contact" name="contact_person">
+      </div>
+      <div class="field">
+        <label for="f3_service">Type of Service / Transaction Requested <span class="req">*</span></label>
+        <select id="f3_service" name="service_requested" required>
+          <option value="">-- Select service --</option>
+          <option>Cash Advance / Reimbursement</option>
+          <option>Payroll-related Request</option>
+          <option>Check Preparation / Voucher</option>
+          <option>Purchase Requisition Support</option>
+          <option>Budget Inquiry / Allocation</option>
+          <option>Financial Report / Statement Request</option>
+          <option>Billing / Collection Coordination</option>
+          <option>Bank Transaction Support</option>
+          <option>Certification / Document Request</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f3_date">Date <span class="req">*</span></label>
+        <input type="date" id="f3_date" name="date_of_transaction" required>
+      </div>
+    </div>
+
+    <h2 class="section">B. Service Evaluation</h2>
+    <table class="rate">
+      <thead>
+        <tr>
+          <th class="criteria">Service Quality Criteria</th>
+          <th>5 Excellent</th><th>4 Very Satisfactory</th><th>3 Satisfactory</th><th>2 Fair</th><th>1 Poor</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="criteria">Timeliness (response/turnaround within agreed/reasonable time) <span class="req">*</span></td>
+          <td><label class="ropt"><input type="radio" name="rate_timeliness" value="5" required><span class="rnum">5</span><span class="rlabel">Excellent</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_timeliness" value="4"><span class="rnum">4</span><span class="rlabel">Very Sat.</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_timeliness" value="3"><span class="rnum">3</span><span class="rlabel">Satisfactory</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_timeliness" value="2"><span class="rnum">2</span><span class="rlabel">Fair</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_timeliness" value="1"><span class="rnum">1</span><span class="rlabel">Poor</span></label></td>
+        </tr>
+        <tr><td class="criteria">Quality and accuracy of output provided <span class="req">*</span></td>
+          <td><label class="ropt"><input type="radio" name="rate_quality" value="5" required><span class="rnum">5</span><span class="rlabel">Excellent</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_quality" value="4"><span class="rnum">4</span><span class="rlabel">Very Sat.</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_quality" value="3"><span class="rnum">3</span><span class="rlabel">Satisfactory</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_quality" value="2"><span class="rnum">2</span><span class="rlabel">Fair</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_quality" value="1"><span class="rnum">1</span><span class="rlabel">Poor</span></label></td>
+        </tr>
+        <tr><td class="criteria">Communication and coordination throughout the transaction <span class="req">*</span></td>
+          <td><label class="ropt"><input type="radio" name="rate_communication" value="5" required><span class="rnum">5</span><span class="rlabel">Excellent</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_communication" value="4"><span class="rnum">4</span><span class="rlabel">Very Sat.</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_communication" value="3"><span class="rnum">3</span><span class="rlabel">Satisfactory</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_communication" value="2"><span class="rnum">2</span><span class="rlabel">Fair</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_communication" value="1"><span class="rnum">1</span><span class="rlabel">Poor</span></label></td>
+        </tr>
+        <tr><td class="criteria">Attitude and professionalism of staff <span class="req">*</span></td>
+          <td><label class="ropt"><input type="radio" name="rate_attitude" value="5" required><span class="rnum">5</span><span class="rlabel">Excellent</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_attitude" value="4"><span class="rnum">4</span><span class="rlabel">Very Sat.</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_attitude" value="3"><span class="rnum">3</span><span class="rlabel">Satisfactory</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_attitude" value="2"><span class="rnum">2</span><span class="rlabel">Fair</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_attitude" value="1"><span class="rnum">1</span><span class="rlabel">Poor</span></label></td>
+        </tr>
+        <tr><td class="criteria">Responsiveness to follow-ups, queries, or concerns <span class="req">*</span></td>
+          <td><label class="ropt"><input type="radio" name="rate_responsiveness" value="5" required><span class="rnum">5</span><span class="rlabel">Excellent</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_responsiveness" value="4"><span class="rnum">4</span><span class="rlabel">Very Sat.</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_responsiveness" value="3"><span class="rnum">3</span><span class="rlabel">Satisfactory</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_responsiveness" value="2"><span class="rnum">2</span><span class="rlabel">Fair</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_responsiveness" value="1"><span class="rnum">1</span><span class="rlabel">Poor</span></label></td>
+        </tr>
+        <tr class="overall"><td class="criteria">Overall Rating <span class="req">*</span></td>
+          <td><label class="ropt"><input type="radio" name="rate_overall" value="5" required><span class="rnum">5</span><span class="rlabel">Excellent</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_overall" value="4"><span class="rnum">4</span><span class="rlabel">Very Sat.</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_overall" value="3"><span class="rnum">3</span><span class="rlabel">Satisfactory</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_overall" value="2"><span class="rnum">2</span><span class="rlabel">Fair</span></label></td>
+          <td><label class="ropt"><input type="radio" name="rate_overall" value="1"><span class="rnum">1</span><span class="rlabel">Poor</span></label></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 class="section">C. Honesty and Integrity</h2>
+    <div class="integrity">
+      <p>Before or during the processing of your transaction, were you asked for — or did you offer or give — any gift, gratuity, favor, entertainment, loan, or anything of monetary value or other form of consideration (aside from official/authorized fees) to any employee or representative of the Finance Services Department to expedite, facilitate, or influence the outcome of your transaction? <span class="req">*</span></p>
+      <div class="choices">
+        <label><input type="radio" name="integrity" value="No" required> No</label>
+        <label><input type="radio" name="integrity" value="Yes"> Yes</label>
+      </div>
+      <div class="field" style="margin-top:10px;">
+        <label for="f3_integrity_details">If yes, please provide details:</label>
+        <textarea id="f3_integrity_details" name="integrity_details"></textarea>
+      </div>
+      <div class="confidential-note">
+        Responses to this item are handled with strict confidentiality and used solely for honesty/integrity
+        monitoring under PANELCO I's Code of Ethics and Discipline; they do not affect the service you receive.
+      </div>
+    </div>
+
+    <h2 class="section">D. Suggestions for Improvement</h2>
+    <div class="row full">
+      <div class="field">
+        <textarea name="comments"></textarea>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="f3_respondent">Respondent's Name / Signature (optional)</label>
+        <input type="text" id="f3_respondent" name="respondent_name">
+      </div>
+      <div class="field">
+        <label for="f3_signdate">Date</label>
+        <input type="date" id="f3_signdate" name="date_signed">
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="button" class="btn ghost" onclick="window.print()">Print</button>
+      <button type="reset" class="btn ghost">Reset</button>
+      <button type="submit" class="btn primary">Submit to Google Sheet</button>
+    </div>
+    <div class="status" role="status" aria-live="polite"></div>
+  </form>
+
+</div>
+
+<script>
+  // ============ CONFIG — Apps Script Web App URL ========================================
+  // Get it from: Google Sheet → Extensions → Apps Script → Deploy → Web app
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxuwbEOGCG_DsP209gFxxE1gBbQYv2acoCgFdDrYofqvsdxFiIS3UMA34nwexeJfhP3AA/exec";
+  // =====================================================================================
+
+  // Tab switching
+  const tabs = document.querySelectorAll(".form-picker button");
+  const forms = document.querySelectorAll("form.card");
+  tabs.forEach(btn => {
+    btn.addEventListener("click", () => {
+      tabs.forEach(b => { b.classList.remove("active"); b.setAttribute("aria-selected", "false"); });
+      btn.classList.add("active");
+      btn.setAttribute("aria-selected", "true");
+      forms.forEach(f => f.classList.add("hidden"));
+      document.getElementById(btn.dataset.target).classList.remove("hidden");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
+
+  // Serialize form as object (handles multiple values, ignores empty)
+  function serialize(form) {
+    const data = { form_name: form.dataset.formname, submitted_at: new Date().toISOString() };
+    const fd = new FormData(form);
+    for (const [k, v] of fd.entries()) {
+      if (v === "" || v == null) continue;
+      if (k in data) {
+        data[k] = [].concat(data[k], v);
+      } else {
+        data[k] = v;
+      }
+    }
+    return data;
+  }
+
+  function showStatus(form, msg, ok) {
+    const el = form.querySelector(".status");
+    el.textContent = msg;
+    el.className = "status show " + (ok ? "ok" : "err");
+  }
+
+  function downloadJSON(data, filename) {
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  forms.forEach(form => {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      form.classList.add("submitted");
+      if (!form.checkValidity()) {
+        // Let the browser show the first missing-field bubble
+        form.reportValidity();
+        showStatus(form, "Please fill in all required fields marked with *", false);
+        return;
+      }
+      const data = serialize(form);
+      const submitBtn = form.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      const originalLabel = submitBtn.textContent;
+      submitBtn.textContent = "Submitting…";
+
+      if (!APPS_SCRIPT_URL) {
+        // Fallback: download as JSON so no data is lost
+        const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+        downloadJSON(data, `${form.id}-${stamp}.json`);
+        showStatus(form, "Apps Script URL not configured yet — response saved as a JSON download. See instructions below to wire up Google Sheets.", true);
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalLabel;
+        return;
+      }
+
+      try {
+        // text/plain avoids a CORS preflight; Apps Script reads the raw body via e.postData.contents
+        const res = await fetch(APPS_SCRIPT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=UTF-8" },
+          body: JSON.stringify(data),
+          redirect: "follow",
+        });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        showStatus(form, "Thank you — your response has been recorded.", true);
+        form.reset();
+      } catch (err) {
+        console.error(err);
+        showStatus(form, "Could not submit right now. Your response was saved as a download instead.", false);
+        const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+        downloadJSON(data, `${form.id}-${stamp}.json`);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalLabel;
+      }
+    });
+  });
+</script>
+</body>
+</html>
